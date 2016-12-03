@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Settings.class));
+              //  startActivity(new Intent(MainActivity.this, Settings.class));
             }
         });
     }
