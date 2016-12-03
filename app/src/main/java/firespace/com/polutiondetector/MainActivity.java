@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-
+    double percenthumidity;
     double millibars_of_pressure;
     Button settingsButton;
     private SensorManager sensorManager;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Settings.class));
+              //  startActivity(new Intent(MainActivity.this, Settings.class));
             }
         });
     }
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         else if (sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY) {
             double x = sensorEvent.values[0];
+            percenthumidity = x;
             System.out.println("The humid is: " + x);
         }
 
@@ -92,9 +93,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             System.out.println("Your ambient air pressure is acceptable");
         }
 
-        else if(millibars_of_pressure <= Collections.min(list) && millibars_of_pressure >= Collections.max(list)){
+        else if(millibars_of_pressure >= Collections.max(list)){
             System.out.println("Your ambient air pressure is too high. There may be dangerous levels of pollutants");
         }
+
+        else if(millibars_of_pressure <= Collections.min(list)){
+            System.out.println("Your ambient air pressure is too low. Headaches and joint pain are common in low pressure systems, and uncomfortable ear popping can occur as the body tries to equalize the pressure inside its cavities with the changing atmospheric pressure.");
+        }
+
+        if(percenthumidity>45){
+            System.out.println("Your ambient humidity is too high. Due to this high humidity there may be a dangerous level of mold that is injurious health.");
+        }
+
+        else if(percenthumidity<35){
+            System.out.println("Your ambient humidity is too low. This causes dryness that can lead to an unsafe lack of moisture in the eyes and cracked skin. Cracked skin can increase to a greater change of infection.");
+        }
+
+        else{
+            System.out.println("Your ambient humidity is acceptable");
+        }
+
     }
 
     @Override
