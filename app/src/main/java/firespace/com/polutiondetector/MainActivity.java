@@ -18,6 +18,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    double millibars_of_pressure;
     Button settingsButton;
     private SensorManager sensorManager;
     private Sensor temperature;
@@ -36,20 +37,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         humidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
         pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
-            List<Sensor> pressure = mSensorManager.getSensorList(Sensor.TYPE_PRESSURE);
+            List<Sensor> pressure = sensorManager.getSensorList(Sensor.TYPE_PRESSURE);
             System.out.println("There is air pressure");
         } else {
             System.out.println("There is no gyroscope");
         }
 
 
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) != null) {
-            List<Sensor> pressure = mSensorManager.getSensorList(Sensor.TYPE_RELATIVE_HUMIDITY);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) != null) {
+            List<Sensor> pressure = sensorManager.getSensorList(Sensor.TYPE_RELATIVE_HUMIDITY);
             System.out.println("There is a HUMIDITY");
         } else {
             System.out.println("There is no HUMIDITY");
         }
-
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,26 +71,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else if (sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY) {
             double x = sensorEvent.values[0];
             System.out.println("The humid is: " + x);
-
         }
 
         else if (sensor.getType() == Sensor.TYPE_PRESSURE) {
             double x = sensorEvent.values[0];
-            if (list.size() <= 49) {
+            millibars_of_pressure = x;
+            if (list.size() <= listLength) {
                 list.add(x);
             }
 
-            if(list.size() == 49) {
+            if (list.size() == listLength) {
                 sensorManager.unregisterListener(this, pressure);
-                System.out.println("The max is: " + Collections.min(list) + "The min is: " + Collections.min(list));
+                sensorManager.unregisterListener(this, temperature);
+                sensorManager.unregisterListener(this, humidity);
+                System.out.println("The max is: " + Collections.max(list) + "The min is: " + Collections.min(list));
             }
         }
 
-        if (millibars_of_pressure >= Collections.min(list) && millibars_of_pressure <= Collections.min(list)) {
+        if (millibars_of_pressure >= Collections.min(list) && millibars_of_pressure <= Collections.max(list)) {
             System.out.println("Your ambient air pressure is acceptable");
         }
 
-        else if(millibars_of_pressure <= Collections.min(list) && millibars_of_pressure >= Collections.min(list)){
+        else if(millibars_of_pressure <= Collections.min(list) && millibars_of_pressure >= Collections.max(list)){
             System.out.println("Your ambient air pressure is too high. There may be dangerous levels of pollutants");
         }
     }
@@ -111,6 +113,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this);
     }
 }
